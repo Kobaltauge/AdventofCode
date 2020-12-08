@@ -1,5 +1,3 @@
-import re
-
 with open("day_07.txt") as f:
     baglistraw = list(f.read().splitlines())
 
@@ -8,20 +6,10 @@ with open("day_07.txt") as f:
 
 def check_gold(bag):
     if "shiny gold" in bag:
-        # print(bag,bagcont)
         return True
     else:
         if any([check_gold(bagitem) for bagitem in bags[bag]]):
             return True
-        # else:
-        #     return False
-
-    # if any("bright white" in c for c in bagcont):
-    #     count +=1
-    #     return count
-    # elif bag in bags:
-    #     check_white_yellow(bag, bagcont, count)
-    #     return count
 
 bags = {}
 
