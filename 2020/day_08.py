@@ -1,5 +1,3 @@
-import time
-
 with open("day_08.txt") as f:
     oplist = f.read().splitlines()
 
@@ -15,12 +13,11 @@ while True:
     opraw = oplist[index]
     op = opraw[:3]
     data = opraw[4:]
-    print(index, op, int(data), accumulator_old, accumulator)
+    # print(index, op, int(data), accumulator_old, accumulator)
     stack.append(index)
     if op == "acc":
         accumulator_old = int(accumulator)
         accumulator += int(data)
-        time.sleep(0.2)
         index += 1
     elif op == "jmp":
         index += int(data)
