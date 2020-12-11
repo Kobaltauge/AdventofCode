@@ -40,20 +40,24 @@ adaptmulti = {}
 
 for index in range(len(adaptorlist)):
     adaptorgraph[str(adaptorlist[index])] = []
-    adaptmulti[str(index)] = []
+    adaptmulti[str(index+1)] = []
     if str(adaptorlist[index]-1) in adaptorgraph.keys():
         adaptorgraph[str(adaptorlist[index]-1)].append(adaptorlist[index])
-        adaptmulti[str(index)].append(adaptorlist[index])
+        adaptmulti[str(index+1)].append(adaptorlist[index])
     if str(adaptorlist[index]-2) in adaptorgraph.keys():
         adaptorgraph[str(adaptorlist[index]-2)].append(adaptorlist[index])
-        adaptmulti[str(index)].append(adaptorlist[index])
+        adaptmulti[str(index+1)].append(adaptorlist[index-2])
     if str(adaptorlist[index]-3) in adaptorgraph.keys():
         adaptorgraph[str(adaptorlist[index]-3)].append(adaptorlist[index])
-        adaptmulti[str(index)].append(adaptorlist[index])
+        adaptmulti[str(index+1)].append(adaptorlist[index-3])
 
+sum = 0
+for index in adaptmulti:
+    adaptlist = adaptmulti[index]
+    for e in adaptlist:
+        sum += int(index) * int(e)
 
-
-print(adaptmulti)
+print(sum)
 print("end")
 
 
