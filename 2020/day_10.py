@@ -46,49 +46,6 @@ for index in range(len(adaptorlist)):
         adaptorgraph[str(adaptorlist[index]-3)].append(adaptorlist[index])
 
 
-# def get_routes(node, route=None):
-#     node = str(node)
-#     route = route or []
-#     # If this node has children, clone the route, so we can process
-#     # both the right and left child separately.
-#     try:
-#         if adaptorgraph[node][1]:
-#             mid_route = route.copy()
-#     except:
-#         pass
-
-#     try:
-#         if adaptorgraph[node][2]:
-#             right_route = route.copy()
-#     except:
-#         pass
-
-#     # Process the main (left) route.  Pass the route on to the left 
-#     # child, which may return multiple routes.
-#     route.append(node)
-#     routes = get_routes(adaptorgraph[node][0], route) if (len(adaptorgraph.get(node))>0) else [route]
-
-#     # If there is a right child, process that as well.  Add the route
-#     # results.  Note that NP.right is set to True, to indicate a right path.
-#     try:
-#         if adaptorgraph[node][1]:
-#             mid_route.append(node)
-#             mid_routes = get_routes(adaptorgraph[node][1], mid_route)
-#             routes.extend(mid_routes)
-#     except:
-#         pass
-    
-#     try:
-#         if adaptorgraph[node][2]:
-#             right_route.append(node)
-#             right_routes = get_routes(adaptorgraph[node][2], right_route)
-#             routes.extend(right_routes)
-#     except:
-#         pass
-
-#     # Pass the results back
-#     return routes
-
 def get_routes(node, route=None):
     node = str(node)
     route = route or []
