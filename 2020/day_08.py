@@ -35,7 +35,6 @@ with open("day_08_new.txt") as f:
 
 def check(oplist):
     accumulator = 0
-    accumulator_old = 0
     index = 0
     stack = []
 
