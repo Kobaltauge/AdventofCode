@@ -37,7 +37,10 @@ buses = buses.split(",")
 buses = [int(e) if not e=="x" else str(e) for e in buses]
 buses = [[e, buses[e]] for e in range(len(buses)) if (isinstance(buses[e], int))]
 
+buses.sort(key=lambda x: x[1], reverse=True)
+
 multi = buses[0][1]
+
 multi = 99999999986
 while True:
     # print(multi)
@@ -49,7 +52,10 @@ while True:
     #     print(multi)
     #     break
 
-    if all([((multi + e[0]) % e[1] == 0) for e in buses]):
-        print(multi)
-        break
+    if all([((multi + e[0]) % e[1] == 0) for e in buses[:2]]):
+        if all([((multi + e[0]) % e[1] == 0) for e in buses[:4]]):
+            if all([((multi + e[0]) % e[1] == 0) for e in buses[:6]]):
+                if all([((multi + e[0]) % e[1] == 0) for e in buses]):
+                    print(multi)
+                    break
     multi += buses[0][1]
