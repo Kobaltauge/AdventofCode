@@ -1,3 +1,5 @@
+import math
+
 values = {"departure_location":[[31,201],[227,951]], \
 "departure_station":[[49,885],[892,961]], \
 "departure_platform":[[36,248],[258,974]], \
@@ -51,6 +53,7 @@ for nearby in nearbys:
             valid = False
     if (valid):
         right_nearbys.append(nearby)
+print(len(right_nearbys))
 print(scan_err)
 
 print("part 2")
@@ -63,14 +66,43 @@ for nearby in right_nearbys:
     for field in range(20):
         reorder[str(field)].append(nearby[field])
 
+sorter = {}
+for key in values.keys():
+    sorter[key] = [i for i in range(20)]    
+
+counter1 = 0
+
 for key in values.keys():
     [[a,b],[c,d]] = values[key]
     for i in range(20):
-        check = [no for no in reorder[str(i)] if (((a <= no <= b) or (c <= no <= d)))]
-        if len(check) != 190:
-            print("{}:{}".format(i, key))
-        elif len(check) == 190:
-            print("{}:{}".format(i, key))
+        check = [i for no in reorder[str(i)] if (((a <= no <= b) or (c <= no <= d)))]
+        # print(len(check))
+        if len(check) == 190:
+            # print("{}:{}".format(i, key))
+            sorter[key].remove(i)
+            counter1 += 1
 
+fields = [k for k in sorted(sorter, key=lambda k: len(sorter[k]))]
+
+answerdict = {}
+answerdict[fields[0]] = 20
+answerlist = []
+counter = 1
+
+while counter < 20:
+    x = [x for x in sorter if (len(sorter[x])) == counter][0]
+    list1 = list(set(sorter[x]) - set(answerlist))
+    answerdict[x] = list1[0]
+    answerlist.append(list1[0])
+    counter += 1
+
+indices = [val for key, val in answerdict.items() if 'departure' in key] 
+
+answerlist = []
+for i in indices:
+    answerlist.append(my_ticket[i-1])
+
+answer = math.prod(answerlist)
+print(answer)
 
 print("end")
