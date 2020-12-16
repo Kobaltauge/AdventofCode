@@ -41,11 +41,36 @@ for [[i1,i2],[j1,j2]] in values.values():
         d = j2  
 
 scan_err = 0
+right_nearbys = []
 for nearby in nearbys:
+    valid = True
     for no in nearby:
-        if not ((a <= no <= b) or (c <= no <= d)):
-            scan_err += no
-print(no)
-print("stop")
+        scan_err_single = [no for [[a,b],[c,d]] in values.values() if (not ((a <= no <= b) or (c <= no <= d)))]
+        if len(scan_err_single) == 20:
+            scan_err += scan_err_single[0]
+            valid = False
+    if (valid):
+        right_nearbys.append(nearby)
+print(scan_err)
 
 print("part 2")
+
+reorder = {}
+for e in range(20):
+    reorder[str(e)] = []
+
+for nearby in right_nearbys:
+    for field in range(20):
+        reorder[str(field)].append(nearby[field])
+
+for key in values.keys():
+    [[a,b],[c,d]] = values[key]
+    for i in range(20):
+        check = [no for no in reorder[str(i)] if (((a <= no <= b) or (c <= no <= d)))]
+        if len(check) != 190:
+            print("{}:{}".format(i, key))
+        elif len(check) == 190:
+            print("{}:{}".format(i, key))
+
+
+print("end")
