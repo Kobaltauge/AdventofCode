@@ -10,8 +10,8 @@ os.environ['SDL_VIDEO_WINDOW_POS'] = str(position[0]) + "," + str(position[1])
 with open("day_24.txt") as f:
     directionsrawarray = f.read().splitlines()
 
-with open("day_24_exampl.txt") as f:
-    directionsrawarray = f.read().splitlines()
+# with open("day_24_exampl.txt") as f:
+#     directionsrawarray = f.read().splitlines()
 
 directionsarray = []
 for directionsraw in directionsrawarray:
@@ -103,7 +103,7 @@ pygame.init()
 screen = pygame.display.set_mode((WIDTH, HEIGHT), 0, 32)
 
 def draw_hex(surface, color, position):
-    r = 10
+    r = 6
     a, b = position
 
     if b % 2 == 0:
@@ -171,36 +171,43 @@ while run:
                 if not str(str(actpos[0]) + '_' +  str(actpos[1])) in placed.keys():
                     placed[str(str(actpos[0]) + '_' +  str(actpos[1]))] = title(actpos[0], actpos[1])
             draw_hex(screen, placed[str(str(actpos[0]) + '_' +  str(actpos[1]))].color, actpos)
-            # pygame.display.update()
+            pygame.display.update()
         pygame.display.update()
         run = False
 
-print(len([print(i) for i in placed.keys() if placed[i].color == "black"]))
+print(len([i for i in placed.keys() if placed[i].color == "black"]))
 print("part 2")
 
 
-for day in range(1,100):
+for day in range(1,101):
+    xxx = list(dict.fromkeys(placed))
+    for i in range(min([int(i.split("_")[0])-1 for i in xxx]),max([int(i.split("_")[0]) for i in xxx])+1):
+        for j in range(min([int(i.split("_")[1])-1 for i in xxx]),max([int(i.split("_")[1]) for i in xxx])+1):
+            actpos = [i,j]
+            if not str(str(actpos[0]) + '_' +  str(actpos[1])) in placed.keys():
+                placed[str(str(actpos[0]) + '_' +  str(actpos[1]))] = title(actpos[0], actpos[1])
+                draw_hex(screen, color_white, actpos)
+            # pygame.display.update()
+
     to_toggle = []
     checkdict = dict.fromkeys(placed)
-    for title in checkdict:
-        titlecolor = placed[title].color
-        neighbours = placed[title].adjacent()
+    for chk_title in checkdict:
+        titlecolor = placed[chk_title].color
+        neighbours = placed[chk_title].adjacent()
         if titlecolor == "black" and (neighbours.count('black') == 0 or neighbours.count('black') > 2):
-            to_toggle.append(title)
-            draw_dot(screen, color_red, (int(title.split("_")[0]), int(title.split("_")[1])))
+            to_toggle.append(chk_title)
+            # draw_dot(screen, color_red, (int(chk_title.split("_")[0]), int(chk_title.split("_")[1])))
         if titlecolor == "white" and neighbours.count('black') == 2:
-            to_toggle.append(title)
-            draw_dot(screen, color_red, (int(title.split("_")[0]), int(title.split("_")[1])))
+            to_toggle.append(chk_title)
+            # draw_dot(screen, color_red, (int(chk_title.split("_")[0]), int(chk_title.split("_")[1])))
     pygame.display.update()
-        
-    print("stop")
-    for title in to_toggle:
-        placed[title].toggle()
-        draw_hex(screen, placed[title].color, (int(title.split("_")[0]), int(title.split("_")[1])))
+
+    for chk_title in to_toggle:
+        placed[chk_title].toggle()
+        draw_hex(screen, placed[chk_title].color, (int(chk_title.split("_")[0]), int(chk_title.split("_")[1])))
 
     pygame.display.update()
-    print(len([print(i) for i in placed.keys() if placed[i].color == "black"]))
-    print("stop")
+    print("{}:{}".format(day, len([i for i in placed.keys() if placed[i].color == "black"])))
 
 pygame.quit()
 # exit()
