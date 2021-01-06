@@ -29,7 +29,6 @@ for move in range(100):
     cupswork[destidx + 1:destidx + 1] = pickup
 
     cups = cupswork[-index:] + cupswork[:-index] 
-
     
     index += 1
     if index >= cupslenght:
@@ -50,7 +49,7 @@ cupslenght = len(cups)
 index = 0
 
 for move in range(10000000):
-    destination = cupswork[index]-1
+    destination = cups[index]-1
     idx1 = index+1
     if idx1 >= cupslenght:
         idx1 = index % cupslenght
@@ -80,10 +79,9 @@ for move in range(10000000):
 
     cups = cupswork[-index:] + cupswork[:-index] 
 
-    
+    if move % 1000 == 0:
+        print(move)
     index += 1
-    if index % 100 == 0:
-        print(index)
     if index >= cupslenght:
         index = 0
 
