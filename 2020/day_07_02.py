@@ -2,18 +2,19 @@ with open("day_07.txt") as f:
     baglistraw = list(f.read().splitlines())
 
 # with open("day_07_exampl.txt") as f:
-#     baglistraw = list(f.read().splitlines())
+    # baglistraw = list(f.read().splitlines())
 
-def check_gold(bag, amount):
-    global cpl_amount
+def check_gold(bag):
     print(bag, bags[bag])
     if bags[bag][0][0] == 0:
-        return True
+        return 0
     else:
-        if all ([check_gold(bagitem[1], bagitem[0]) for bagitem in bags[bag]]):
-            added = sum([int(bagitem[0]) for bagitem in bags[bag]])
-            cpl_amount += amount * added
-        return
+        inneradded = 0
+        for bagitem in bags[bag]:
+            innersum = check_gold(bagitem[1]) * bagitem[0] + bagitem[0]
+            inneradded = inneradded + innersum
+            print("{} contains {}".format(bagitem, inneradded))
+        return inneradded
 
 bags = {}
 
@@ -27,7 +28,6 @@ for bag in baglistraw:
     else:
         bags[bagcolor] = []
 
-cpl_amount = 0
-check_gold("shiny gold", 0)
+cpl_amount = check_gold("shiny gold")
 
 print(cpl_amount)
