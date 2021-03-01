@@ -59,7 +59,6 @@ for move in range(10000000):
     idx3 = index+3
     if idx3 >= cupslenght:
         idx3 = index % cupslenght
-    destination = cupswork[0] - 1
     pickup = [cupswork[idx1], cupswork[idx2], cupswork[idx3]]
 
     found = False
