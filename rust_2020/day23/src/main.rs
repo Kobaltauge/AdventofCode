@@ -1,99 +1,86 @@
-use std::{collections::BTreeSet, iter::FromIterator};
-// use modulo::Mod;
+use std::{thread, time};
+// use std::{collections::BTreeSet, iter::FromIterator};
 
-fn pickupdel<T>(mut items: Vec<T>, to_remove: Vec<T>) -> Vec<T>
-where
-    T: std::cmp::Ord,
-{
-    let to_remove = BTreeSet::from_iter(to_remove);
-    items.retain(|e| !to_remove.contains(e));
-    items
+fn getindex(i: i32, v: &Vec<i32>) -> usize {
+    return v.iter().position(|&r| r == i).unwrap() as usize
 }
 
-fn destidxsearch(v: Vec<i32>, pickup: Vec<i32>, mut destination: i32) -> (i32, usize) {
-    // let destination = destination;
-    let destindex = 0;
-    if !pickup.contains(&destination) {
-        (destination, v.iter().position(|&r| r == destination).unwrap());
-    } else if destination <= 0 {
-        destination = 1000000;
-        let (destination, destindex) = destidxsearch(v.clone(), pickup.clone(), destination.clone());
-    } else {
-        destination = destination - 1;
-        let (destination, destindex) = destidxsearch(v.clone(), pickup.clone(), destination.clone());
-    }
-    return (destination, destindex)
-}
-
+// https://stackoverflow.com/a/47039490/9307482
 
 fn main() {
     let mut v = vec![3,8,9,1,2,5,4,6,7];
     // let mut v = vec![3,8,9,1,2,5,4,6,7,10,11,12,13,14,15];
     // let mut v = vec![4,5,9,6,7,2,8,1,3];
     
-    // for n in 10..1000001 {
-    //     // println!("{}",n);
-    //     v.push(n);
-    // }
+    for n in 10..1000001 {
+        // println!("{}",n);
+        v.push(n);
+    }
+    let maxno = *v.iter().max().unwrap();
     
     let mut index = 0;
     let mut moveno = 1;
-
-    // while moveno < 10000000 {
-    while moveno < 10 {
-        let mut vec_mut = &v;
-        println!("in loop {:?}\n", v);
+    // let moves = 10;
+    let moves = 10000000;
+    let vlen = v.len();
+    for _ in 0..moves {
+        // println!("\n-- move {} --", moveno);
+        // println!("cups {:?}", v);
+        // println!("index {:?}", index);
 
         let idx1 =
-            if index + 1 > 1000000 {
-                index % 1000000
+            if index + 1 >= vlen {
+                index + 1 - vlen
             } else {
                 index + 1
             };
         let idx2 =
-            if index + 2 > 1000000 {
-                index % 1000000
+            if index + 2 >= vlen {
+                index + 2 - vlen
             } else {
                 index + 2
             };
         let idx3 =
-            if index + 3 > 1000000 {
-                index % 1000000
+            if index + 3 >= vlen {
+                index + 3 - vlen
             } else {
                 index + 3
             };
         let mut pickup: Vec<i32> = Vec::new();
-        println!("indexe {} {} {}", idx1, idx2, idx3);
-        println!("pickup {:?}", pickup);
-        pickup.push(vec_mut[idx1]);
-        pickup.push(vec_mut[idx2]);
-        pickup.push(vec_mut[idx3]);
-        println!("pickup after{:?}", pickup);
-
-        let destination = &vec_mut[index] - 1;
-        println!("destination {:?}", destination);
+        pickup.push(v[idx1]);
+        pickup.push(v[idx2]);
+        pickup.push(v[idx3]);
+        // println!("pickup {:?}", pickup);
         
-        vec_mut = pickupdel(vec_mut.clone(), pickup.clone());
-        // v.retain(|x| pickup.contains(x));
-        // v.retain(|&x| x == pickup.iter().unwrap());
-        // pickup.iter().map(|x| x % 2 == 0);
+        let destination = v[index] as i32;
+        let mut target = if destination > 1 {destination - 1} else {maxno};
+        // println!("destination {:?}", target);
+        while pickup[0] == target || pickup[1] == target || pickup[2] == target {
+            target = if target > 1 {target - 1} else {maxno};
+        }
+        // println!("destinationafter {:?}", target);
+        
+        v.retain(|&x| ! pickup.contains(&x));
+        let destidx = getindex(target, &v);
+        // println!("destinationindex {:?}", destidx);
 
-        // println!("{:?} {:?} {:?}", idx1, idx2, idx3);
-        // println!("{:?}", pickup);
-        // println!("{:?}", v);
+        v.insert(destidx + 1, pickup[0]);
+        v.insert(destidx + 2, pickup[1]);
+        v.insert(destidx + 3, pickup[2]);
 
-        let (destination, destidx) = destidxsearch(vec_mut.clone(), pickup.clone(), destination.clone());
+        while v[index] != destination {
+            // v.rotate_left(1);
+            index = if index + 1 <= moves {0} else {index +1};
+        }
 
-        println!("move {}", moveno);
-        println!("new vec {:?}", vec_mut);
-        println!("destination {:?}", destination);
+        // thread::sleep(time::Duration::from_secs(1));
 
-        vec_mut.insert(destidx + 2, pickup[0]);
-        vec_mut.insert(destidx + 3, pickup[1]);
-        vec_mut.insert(destidx + 4, pickup[2]);
-
-        *v = vec_mut;
-        index = index + 1;
+        index = if index + 1 <= moves {0} else {index +1};
+        if moveno % 100 == 0 {println!("{}",moveno)};
         moveno = moveno + 1;
     }
+    println!("{:?}", v);
+    println!("{}", v[getindex(1, &v)+1]);
+    println!("{}", v[getindex(1, &v)+2]);
+    println!("{}", v[getindex(1, &v)+1] * v[getindex(1, &v)+2]);
 }

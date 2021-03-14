@@ -1,0 +1,47 @@
+use std::io::{BufReader, BufRead};
+use std::fs::File;
+
+fn read_input(mut f: BufReader<File>) -> Vec<usize> {
+    let mut line = String::new();
+    f.read_line(&mut line).unwrap();
+    return line.chars().map(|c| c.to_digit(10).unwrap() as usize).collect();
+}
+
+fn main() {
+    let f = BufReader::new(File::open(r"C:\Daten\Programmier\python\AdventofCode\rust_2020\day23\day23.txt").unwrap());
+    let input = read_input(f);
+    println!("{:?}",input);
+    let initial = input[0];
+    
+    println!("{}",initial);
+}
+
+fn crab(initial: usize) {
+    let mut adj = vec![3,8,9,1,2,5,4,6,7,10,11,12,13,14,15,16,17,18,19,20];
+    let n_cups = 8;
+    let mut current = initial;
+
+    for _ in 0..100 {
+        let c1 = adj[current];
+        let c2 = adj[c1];
+        let c3 = adj[c2];
+
+        println!("{} {} {}",c1, c2, c3);
+
+        let mut target = if current > 1 {current - 1} else {n_cups};
+        while c1 == target || c2 == target || c3 == target {
+            target = if target > 1 {target - 1} else {n_cups};
+        }
+
+        let taken_next = adj[c3];
+        let target_next = adj[target];
+
+        adj[current] = taken_next;
+        adj[target] = c1;
+        adj[c3] = target_next;
+        current = taken_next;
+    }
+
+}
+
+
