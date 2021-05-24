@@ -1,0 +1,83 @@
+use std::{thread, time};
+
+const STACK_SIZE: usize = 4 * 1024 * 1024;
+
+fn run() {
+
+    let mut v: [u32; 1000000] = [0; 1000000];
+    
+    // create a concatenate list where the value is
+    // simultaneous the index of the next element
+
+    let mut index = 0;
+    for i in &[3,8,9,1,2,5,4,6,7] {
+    // for i in &[4,5,9,6,7,2,8,1,3] {
+        v[index] = *i as u32;
+        index = *i as usize;
+    }
+    
+    for i in 10..1000001 {
+        v[index] = i as u32;
+        index = i as usize;
+    }
+    
+    // close the loop
+    v[index - 1] = v[3];
+    // v[index - 1] = v[4];
+    
+    // thread::sleep(time::Duration::from_secs(100));
+
+    let mut currcup = 3;
+    let mut moveno = 1;
+    let moves = 10000000;
+    let maxno = 1000000 - 1;
+    for _ in 0..moves {
+
+        let pickup1 = v[currcup as usize];
+        let pickup2 = v[pickup1 as usize];
+        let pickup3 = v[pickup2 as usize];
+        let cupafterpickup = v[pickup3 as usize];
+
+        let mut dest = if currcup > 1 {currcup - 1} else {maxno};
+        while pickup1 == dest || pickup2 == dest || pickup3 == dest {
+            dest = if dest > 1 {dest - 1} else {maxno};
+        }
+        
+        // in the concatenated list this is before the shift
+        // 
+        // currcup => pickup1 => pickup2 => pickup3 => cupafterpickup
+        //
+        // after that the pickups are shiftet after the destiantion cup
+        // therefore we have two separte concatenation
+        //
+        // dest => pickup1 => pickup2 => pickup3 => cupafterdest
+        // currcup => cupafterpickup
+        
+        let cupafterdest = v[dest as usize];
+        v[pickup3 as usize] = cupafterdest;
+        v[dest as usize] = pickup1;
+        v[currcup as usize] = cupafterpickup;
+
+        // println!("\n-- move {} --", moveno);
+        // println!("index {:?}", currcup);
+        // println!("pickup {:?} {:?} {:?}", pickup1, pickup2, pickup3);
+        // println!("destination {:?}", dest);
+        // thread::sleep(time::Duration::from_secs(1));
+        
+        currcup = cupafterpickup;
+        moveno = moveno + 1;
+    }
+    
+    println!("{} {}", v[1], v[(v[1] as usize)]);
+    println!("{}", v[1] as u64 * v[(v[1] as usize)] as u64);
+    // println!("{}", v[getindex(1, &v)+1] * v[getindex(1, &v)+2]);
+}
+
+fn main() {
+    let child = thread::Builder::new()
+        .stack_size(STACK_SIZE)
+        .spawn(run)
+        .unwrap();
+
+    child.join().unwrap();
+}
