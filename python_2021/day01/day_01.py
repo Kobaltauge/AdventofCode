@@ -1,5 +1,3 @@
-from types import prepare_class
-
 with open("day_01.txt") as f:
     numbers = list(map(int, (f.read().splitlines())))
 
