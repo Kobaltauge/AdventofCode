@@ -1,6 +1,5 @@
 from types import prepare_class
 
-
 with open("day_01.txt") as f:
     numbers = list(map(int, (f.read().splitlines())))
 
@@ -22,7 +21,6 @@ for nr in numbers:
 print(f"more {count_more}\nless {count_less}\nequal {count_equal}\n")
 
 prev = 0
-index = 0
 count_more = 0
 count_less = 0
 count_equal = 0
