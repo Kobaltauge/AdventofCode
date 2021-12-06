@@ -16,18 +16,17 @@ print(f"result part 1: {len(fishes)}")
 with open("day_06.txt") as f:
     fishes = list(map(int, (f.read().split(','))))
 
-fishes = [3,4,3,1,2]
+# fishes = [3,4,3,1,2]
 
 fishesarray =[0] * 9
 for fish in fishes:
     fishesarray[fish+1] += 1
 
-for day in range(0,256):
+for day in range(0,257):
     breed = fishesarray.pop(0)
     fishesarray.append(breed)
     fishesarray[6] += breed
     # print(fishesarray)
-    if day == 79:
-        print(fishesarray)
+    if day == 80:
         print(f"check part 1: {sum(fishesarray)}")
 print(f"result part 2: {sum(fishesarray)}")
