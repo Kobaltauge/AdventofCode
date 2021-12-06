@@ -1,4 +1,4 @@
-with open("day_04.txt") as f:
+0with open("day_04.txt") as f:
     numbers = list(map(int, f.readline().split(',')))
     f.readline()
     input = f.read()
