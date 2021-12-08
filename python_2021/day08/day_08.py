@@ -1,9 +1,11 @@
+import pandas as pd
+
 with open("day_08.txt") as f:
-    moves = [x.split('|') for x in f.read().splitlines()]
+    display = [x.split('|') for x in f.read().splitlines()]
 
 count=[0,0,0,0]
 
-for output in moves:
+for output in display:
     output = output[1].split()
     for outdigit in output:
         if len(outdigit) == 2:
@@ -17,24 +19,55 @@ for output in moves:
 result = sum(count)
 print(f'result part 1: {result}')
 
-digitdict =  {0:('a','b','c','e','f','g'),
-                1:('c','f'),
-                2:('a','c','d','e','g'),
-                3:('a','c','d','f','g'),
-                4:('b','c','d','f'),
-                5:('a','b','d','f','g'),
-                6:('a','b','d','e','f','g'),
-                7:('a','c','f'),
-                8:('a','b','c','d','e','f','g'),
-                9:('a','b','c','d','f','g')}
-
-decodedict = {'a':'','b':'','c':'','d':'','e':'','f':'','g':''}
+digitdict =  {0:('abcefg'),
+              1:('cf'),
+              2:('acdeg'),
+              3:('acdfg'),
+              4:('bcdf'),
+              5:('abdfg'),
+              6:('abdefg'),
+              7:('acf'),
+              8:('abcdefg'),
+              9:('abcdfg')}
 
 def decode(input, output):
-    while not any(decodedict.values()):
-        decodedict = [word for word in words if len(word) == size]
-        pass
+    decodedict = {'a':'','b':'','c':'','d':'','e':'','f':'','g':''}
+    complete = ''.join(input)
+    occur = pd.Series(list(complete)).value_counts()
+    decodedict['e'] = occur.where(occur == 4).dropna().keys()[0]
+    decodedict['f'] = occur.where(occur == 9).dropna().keys()[0]
+    decodedict['b'] = occur.where(occur == 6).dropna().keys()[0]
+    input = [word for word in input if len(word) != 4]
+    complete = ''.join(input)
+    complete = complete.replace(decodedict['e'], '').replace(decodedict['f'], '').replace(decodedict['b'], '')
+    occur = pd.Series(list(complete)).value_counts()
+    decodedict['a'] = occur.where(occur == 8).dropna().keys()[0]
+    decodedict['d'] = occur.where(occur == 6).dropna().keys()[0]
+    input = [word for word in input if len(word) != 2]
+    complete = ''.join(input)
+    complete = complete.replace(decodedict['a'], '').replace(decodedict['d'], '').replace(decodedict['e'], '').replace(decodedict['f'], '').replace(decodedict['b'], '')
+    occur = pd.Series(list(complete)).value_counts()
+    decodedict['c'] = occur.where(occur == 6).dropna().keys()[0]
+    decodedict['g'] = occur.where(occur == 7).dropna().keys()[0]
+    result = []
+    for outdigit in output:
+        res = ''
+        for seg in outdigit:
+            res += list(decodedict.keys())[list(decodedict.values()).index(seg)]
+        res = ''.join(sorted(res, key=str.lower))
+        res = list(digitdict.keys())[list(digitdict.values()).index(res)]
+        result.append(res)
+    return result
 
-for move in moves:
-    result = decode(move[0].split(), move[1].split())
+# decode(('abcefg','cf','acdeg','acdfg','bcdf','abdfg','abdefg','acf','abcdefg','abcdfg'), ('cf', 'acf'))
+
+result = 0
+
+for complete in display:
+    res = 0
+    input, output = complete[0].split(), complete[1].split()
+
+    res = int("".join([str(integer) for integer in decode(input, output)]))
+    result += res
+
 print(f'result part 2: {result}')
