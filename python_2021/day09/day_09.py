@@ -14,20 +14,27 @@ def get_neigh(x, y,map):
     dir = {'up':(0,-1),'down':(0,1),'left':(-1,0),'right':(1,0)}
     if y == 0:
         del dir['up']
-    if y == dimy:
+    if y >= dimy-1:
         del dir['down']
     if x == 0:
         del dir['left']
-    if x == dimx:
+    if x >= dimx-1:
         del dir['right']
-    return [map[(x + dir[i][1])][(y + dir[i][0])] for i in dir]
+    return [int(map[(y + dir[i][1])][(x + dir[i][0])]) for i in dir]
 
+minis = []
 for y in range(0, dimy):
     for x in range(0, dimx):
         neigh = get_neigh(x,y, map)
-        min = min(neigh)
-        print(map[x][y], min)
-        print("x")
+        minimum = min(neigh)
+        if int(map[y][x]) < minimum:
+            minis.append(int(map[y][x]))
+minis = [i+1 for i in minis]
+print(f"result part 1: {sum(minis)}")
+
+
+print(minis)
+
 
 # for i in range(0, max):
 #     if i > 0:
