@@ -1,4 +1,5 @@
 #import math
+import re
 
 with open("day_09.txt") as f:
     input = f.read()
@@ -28,16 +29,10 @@ for y in range(0, dimy):
         neigh = get_neigh(x,y, map)
         minimum = min(neigh)
         if int(map[y][x]) < minimum:
-            minis.append(int(map[y][x]))
-minis = [i+1 for i in minis]
-print(f"result part 1: {sum(minis)}")
+            minis.append([(x,y), int(map[y][x])])
 
+print(f"result part 1: {sum([i[1]+1 for i in minis])}")
 
-print(minis)
+map = [re.sub('[0-8]', '0', i) for i in map]
 
-
-# for i in range(0, max):
-#     if i > 0:
-#         neigh.append(maplist[i-1])
-#     if i < max:
-#     if ((i - dimx) < 0) and ((i + dimx) > max):
+print(f"result part 2: {sum([i[1]+1 for i in minis])}")
