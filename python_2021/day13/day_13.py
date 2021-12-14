@@ -12,13 +12,13 @@ def fold(f, pos, grid):
     gridy = max([x[1] for x in grid])+1
     if f == 'x':
         for x in range(1, int(((gridx-1)/2)+1)):
-            for y in range(0, gridy):
+            for y in range(0, gridy+1):
                 if (pos+x,y) in grid:
                     grid.append((pos-x,y))
                     grid.remove((pos+x,y))
     else:
-        for x in range(0, gridx):
-            for y in range(1, int(((gridy-1)/2)+1)):
+        for x in range(0, gridx+1):
+            for y in range(0, int(((gridy-1)/2)+1)):
                 if (x,y+pos) in grid:
                     grid.append((x,y-pos))
                     grid.remove((x,y+pos))
@@ -26,8 +26,8 @@ def fold(f, pos, grid):
 
 # part 1
 # newdots = (fold('y',7,dots))
-newdots  = (fold('x',655,dots)).copy()
-print(len(set(newdots)))
+# newdots = (fold('x',655,dots)).copy()
+# print(len(set(newdots)))
 
 # part 2
 
@@ -35,11 +35,16 @@ newdots = dots.copy()
 for do in folds:
     foldtype = do[0][-1]
     foldpos = int(do[1])
-    newdots  = (fold(foldtype,foldpos,newdots)).copy()
+    # print(newdots)
+    newdots = (fold(foldtype,foldpos,newdots)).copy()
+    print(newdots)
 
-for y in range(0, 10):
+gridx = max([x[0] for x in newdots])+1
+gridy = max([x[1] for x in newdots])+1
+
+for y in range(0, gridy):
     line = ''
-    for x in range(0, 50):
+    for x in range(0, gridx):
         if (x,y) in newdots:
             line = line + "#"
         else:

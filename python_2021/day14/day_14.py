@@ -1,4 +1,6 @@
-with open("day_14_test.txt") as f:
+import itertools
+
+with open("day_14.txt") as f:
     start = f.readline().strip('\n')
     _ = f.readline()
     input = [x.split('->') for x in f.readlines()]
@@ -12,8 +14,30 @@ for step in range(0,10):
         check = output[i]+output[i+1]
         if check in input:
             insertlist.append([i+1,input[check]])
-    for insert in range(len(insertlist)-1, 0, -1):
-        output.insert(insert[0], insert[1])
+    insertlist.reverse()
+    for insert in insertlist:
+        output = output[:insert[0]] + insert[1] + output[insert[0]:]
+        # output.insert(insert[0], insert[1])
+
+resultdict ={}
+for l in output:
+    resultdict[l] = output.count(l)
+x = max(resultdict.values())
+y = min(resultdict.values())
+result = x-y
+print(result)
+
+output = start
+for step in range(0,40):
+    insertlist = []
+    for i in range(0, len(output)-1):
+        check = output[i]+output[i+1]
+        if check in input:
+            insertlist.append(input[check])
+    lastone = output[-1]
+    output = list(itertools.chain.from_iterable(zip(output,insertlist)))
+    output.append(lastone)
+    print(step)
 
 resultdict ={}
 for l in output:
