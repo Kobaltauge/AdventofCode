@@ -1,7 +1,9 @@
 import re
+from typing import Counter
 import numpy as np
+import time
 
-with open("day_09.txt") as f:
+with open("day_09_test.txt") as f:
     input = f.read()
     map = input.splitlines()
     maplist = [int(i) for i in input.replace('\n','')]
@@ -36,7 +38,8 @@ print(f"result part 1: {sum([i[1]+1 for i in minis])}")
 # map = [re.sub('[0-8]', '0', i) for i in map]
 
 def get_adjacent_cells(grid, cell):
-    adjdict = {'n':(0,-1),'ne':(1,-1),'e':(1,0),'se':(1,1),'s':(0,1),'sw':(-1,1),'w':(-1,0),'nw':(-1,-1)}
+    # adjdict = {'n':(0,-1),'ne':(1,-1),'e':(1,0),'se':(1,1),'s':(0,1),'sw':(-1,1),'w':(-1,0),'nw':(-1,-1)}
+    adjdict = {'n':(0,-1),'e':(1,0),'s':(0,1),'w':(-1,0)}
     cells = []
 
     if cell[0] >= len(grid[0])-1:
@@ -49,26 +52,46 @@ def get_adjacent_cells(grid, cell):
         adjdict = {k:v for k,v in adjdict.items() if not 'n' in k}
     
     for neigh in adjdict.values():
-        if int(grid[neigh[0]][neigh[1]]) < 9:
-            print(grid[neigh[0]][neigh[1]])
-            cells.append(neigh)
+        if int(grid[neigh[0]+cell[0]][neigh[1]+cell[1]]) < 9:
+            # print(grid[neigh[0]][neigh[1]])
+            cells.append((neigh[0]+cell[0],neigh[1]+cell[1]))
     return cells 
 
-def count(x, y, map):
-    counter = 0
-    children = get_adjacent_cells(map, (x,y))
-    children = [i for i in children if int(map[i[1]][i[0]]) < 9]
-    if len(children) > 0:
+# def count(x, y, map):
+#     counter = 0
+#     children = get_adjacent_cells(map, (x,y))
+#     children = [i for i in children if int(map[i[1]][i[0]]) < 9]
+#     if len(children) > 0:
+#         for c in children:
+#             counter += count(x+c[0],y+c[1], map)
+#     else:
+#         counter += 1
+#     return counter
+
+def astar(x,y,map, count):
+    while len(openlist) > 0:
+        closedlist.append(openlist[0])
+        x, y = openlist.pop(0)
+        children = get_adjacent_cells(map, (x,y))
+        children = [item for item in children if item not in closedlist]
+        if len(children) == 0:
+            count += 1
         for c in children:
-            counter += count(x+c[0],y+c[1], map)
-    else:
-        counter += 1
-    return counter
+            if not c in closedlist:
+                if c in openlist:
+                    openlist.remove(c)
+                    count = count + astar(c[0], c[1], map, count)
+                else:
+                    openlist.append(c)
+    return count
 
 areas = []
 
 for mini in minis:
-    areas.append(count(mini[0][1],mini[0][0], map))
+    openlist = [mini[0]]
+    closedlist = []
+    amount = astar(mini[0][0],mini[0][1], map, 0)
+    areas.append(amount)
 
 
 
