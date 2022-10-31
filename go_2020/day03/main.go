@@ -7,7 +7,7 @@ import (
 )
 
 func part1() {
-	f, err := os.Open("sample.txt")
+	f, err := os.Open("input.txt")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -26,16 +26,20 @@ func part1() {
 
 	for y <= len(treemap) {
 		x += 3
-		if x >= len(treemap[0])-1 {
-			x = x - len(treemap[0]) - 1
+		if x > len(treemap[0]) {
+			x = x - (len(treemap[0]) - 1)
 		}
 		y += 1
-		if string(treemap[x][y]) == "#" {
-			counter += 1
+		if y == len(treemap) {
+			break
+		} else {
+			if string(treemap[y][x-1]) == "#" {
+				counter += 1
+			}
 		}
 
 	}
-	fmt.Println(counter)
+	fmt.Println(y, counter)
 	// x := strings.Fields(fileScanner.Text())
 	// subarr := strings.Split(x[0], "-")
 	// min, _ := strconv.Atoi(subarr[0])
