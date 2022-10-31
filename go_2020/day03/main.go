@@ -24,35 +24,63 @@ func part1() {
 	y := 0
 	counter := 0
 
-	for y <= len(treemap) {
+	for {
+		if string(treemap[y][x]) == "#" {
+			counter += 1
+		}
 		x += 3
-		if x > len(treemap[0]) {
-			x = x - (len(treemap[0]) - 1)
+		if x > (len(treemap[0]) - 1) {
+			x = x - (len(treemap[0]))
 		}
 		y += 1
 		if y == len(treemap) {
 			break
-		} else {
-			if string(treemap[y][x-1]) == "#" {
+		}
+	}
+	fmt.Println(counter)
+}
+
+func part2() {
+	f, err := os.Open("input.txt")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	var treemap []string
+	fileScanner := bufio.NewScanner(f)
+
+	for fileScanner.Scan() {
+		treemap = append(treemap, fileScanner.Text())
+	}
+	f.Close()
+
+	sol := 1
+	dir := [10]int{1, 1, 3, 1, 5, 1, 7, 1, 1, 2}
+
+	for i := 0; i < 10; i += 2 {
+		x := 0
+		y := 0
+		counter := 0
+		for {
+			if string(treemap[y][x]) == "#" {
 				counter += 1
 			}
+			x += dir[i]
+			if x > (len(treemap[0]) - 1) {
+				x = x - (len(treemap[0]))
+			}
+			y += dir[i+1]
+			if y >= len(treemap) {
+				break
+			}
 		}
-
+		// fmt.Println(y, counter)
+		sol = sol * counter
 	}
-	fmt.Println(y, counter)
-	// x := strings.Fields(fileScanner.Text())
-	// subarr := strings.Split(x[0], "-")
-	// min, _ := strconv.Atoi(subarr[0])
-	// max, _ := strconv.Atoi(subarr[len(subarr)-1])
-	// subarr = strings.Split(x[1], ":")
-	// lett := subarr[0]
-	// occur := strings.Count(x[2], lett)
-	// if occur >= min && occur <= max {
-	// 	counter++
-	// }
-	// }
+	fmt.Println(sol)
 }
 
 func main() {
 	part1()
+	part2()
 }
