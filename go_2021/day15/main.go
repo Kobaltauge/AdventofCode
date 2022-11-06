@@ -36,13 +36,15 @@ func main() {
 		}
 		// add distance of point
 		d += int(grid[p.x][p.y]) - '0'
-		fmt.Println(p.x, p.y)
-		printdist(dist)
+		// fmt.Println(p.x, p.y)
+		// fmt.Println(dist[p.x][p.y], d)
+		// printdist(dist)
 		if dist[p.x][p.y] <= d {
 			return
 		}
 		dist[p.x][p.y] = d
 		work[d] = append(work[d], p)
+		// fmt.Println(d, work[d])
 	}
 
 	// at start the first "distance" must be substracted,
@@ -62,7 +64,8 @@ func main() {
 		add(point{p.x, p.y + 1}, d)
 	}
 
-	for _, w := range work {
+	for idx, w := range work {
+		fmt.Println(idx, w)
 		for _, p := range w {
 			visit(p)
 		}
