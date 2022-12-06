@@ -23,34 +23,6 @@ func part1() {
 			break
 		}
 	}
-	// m := make(map[string]int)
-
-	// for _, char := range input {
-	// 	if _, ok := m[string(char)]; ok {
-	// 		m[string(char)] = m[string(char)] + 1
-	// 	} else {
-	// 		m[string(char)] = 1
-	// 	}
-
-	// }
-
-	// keys := make([]string, 0, len(m))
-
-	// for key := range m {
-	// 	keys = append(keys, key)
-	// }
-
-	// fmt.Println(m)
-	// fmt.Println(keys)
-
-	// sort.SliceStable(keys, func(i, j int) bool {
-	// 	return m[keys[i]] > m[keys[j]]
-	// })
-
-	// fmt.Println(keys)
-
-	// fmt.Println(m)
-
 }
 
 func part2() {
