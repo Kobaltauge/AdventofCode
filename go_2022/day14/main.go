@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"os"
 	"strconv"
@@ -10,7 +9,7 @@ import (
 )
 
 func part1() {
-	f, err := os.Open("sample.txt")
+	f, err := os.Open("input.txt")
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -23,7 +22,10 @@ func part1() {
 	for i := 0; i < 1000; i++ {
 		cave[i] = make([]string, 1000)
 	}
+	top := 0
 	bottom := 0
+	left := 100000
+	right := 0
 
 	for fileScanner.Scan() {
 		raw := strings.Fields(fileScanner.Text())
@@ -36,30 +38,62 @@ func part1() {
 				x, _ := strconv.Atoi(strings.Split(koor, ",")[0])
 				y, _ := strconv.Atoi(strings.Split(koor, ",")[1])
 				if idx == 0 {
-					startx = x
-					starty = y
+					endx = x
+					endy = y
 					continue
-				} else if idx == 2 {
-					endx = x
-					endy = y
+				}
+				startx = endx
+				starty = endy
+				endx = x
+				endy = y
+				fx := 0
+				tx := 0
+				fy := 0
+				ty := 0
+				if startx < endx {
+					fx = startx
+					tx = endx
 				} else {
-					startx = endx
-					starty = endy
-					endx = x
-					endy = y
-					for i := starty; i <= endy; i++ {
-						for j := startx; i <= endx; j++ {
-							cave[i][j] = "#"
-						}
+					tx = startx
+					fx = endx
+				}
+				if starty < endy {
+					fy = starty
+					ty = endy
+				} else {
+					fy = endy
+					ty = starty
+				}
+				if startx < left {
+					left = startx
+				}
+				if endx > right {
+					right = endx
+				}
+				if starty < top {
+					top = starty
+				}
+				if endy > bottom {
+					bottom = endy
+				}
+				for i := fy; i <= ty; i++ {
+					for j := fx; j <= tx; j++ {
+						cave[i][j] = "#"
 					}
 				}
 			}
 		}
 
-		for i := 400; i < 550; i++ {
-			fmt.Println(cave[i])
+	}
+	for i := top; i <= bottom; i++ {
+		for j := left; j <= right; j++ {
+			if cave[i][j] == "#" {
+				fmt.Print(cave[i][j])
+			} else {
+				fmt.Print(".")
+			}
 		}
-		fmt.Println(bottom)
+		fmt.Print("\n")
 	}
 	// for i := range dist {
 	// 	dist[i] = make([]int, n)
@@ -115,93 +149,6 @@ func part1() {
 	// }
 }
 
-func part2() {
-	data, _ := os.ReadFile("input.txt")
-	gridraw := bytes.Fields(data)
-	m := len(gridraw)
-	n := m * 5
-
-	grid := make([][]int, n)
-	for i := 0; i < n; i++ {
-		grid[i] = make([]int, n)
-		if i < m {
-			for j := 0; j < n; j++ {
-				if j >= m {
-					value := int(grid[i][j-m])
-					value = value + 1
-					if value > 9 {
-						value -= 9
-					}
-					grid[i][j] = value
-				} else {
-					value := int(gridraw[i][j%m]) - '0'
-					grid[i][j] = value
-				}
-			}
-		} else {
-			for j := 0; j < n; j++ {
-				value := grid[i-m][j]
-				value = value + 1
-				if value > 9 {
-					value -= 9
-				}
-				grid[i][j] = value
-			}
-		}
-	}
-
-	dist := make([][]int, n)
-	for i := range dist {
-		dist[i] = make([]int, n)
-		for j := range dist[i] {
-			dist[i][j] = 1e9
-		}
-	}
-
-	type point struct{ x, y int }
-	work := make([][]point, 20*n)
-
-	add := func(p point, d int) {
-		// check if off grid
-		if p.x < 0 || p.x >= n || p.y < 0 || p.y >= n {
-			return
-		}
-		// add distance of point
-		d += int(grid[p.x][p.y])
-		// fmt.Println(p.x, p.y)
-		// printdist(dist)
-		if dist[p.x][p.y] <= d {
-			return
-		}
-		dist[p.x][p.y] = d
-		work[d] = append(work[d], p)
-	}
-
-	// at start the first "distance" must be substracted,
-	// because we add it in the function
-	add(point{0, 0}, -int(grid[0][0]))
-
-	visit := func(p point) {
-		d := dist[p.x][p.y]
-		if p.x == n-1 && p.y == n-1 {
-			fmt.Println(d)
-			return
-		}
-
-		add(point{p.x - 1, p.y}, d)
-		add(point{p.x + 1, p.y}, d)
-		add(point{p.x, p.y - 1}, d)
-		add(point{p.x, p.y + 1}, d)
-	}
-
-	for _, w := range work {
-		for _, p := range w {
-			visit(p)
-		}
-	}
-}
-
 func main() {
 	part1()
-	part2()
 }
