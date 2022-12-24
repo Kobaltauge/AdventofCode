@@ -62,63 +62,41 @@ func part1() {
 	fmt.Println("Part 1:", monkeys["root"])
 }
 
-func diff(a, b int) int {
-	if a < b {
-		return b - a
-	}
-	return a - b
-}
-
 // https://stackoverflow.com/a/30765350
 
 func part2() {
-	monkeys := map[string]int{}
-	stack := map[string][]string{}
+	imin := 0
+	imax := int(1e16)
+	i := int(imax / 2)
+	for {
+		monkeys := map[string]int{}
+		stack := map[string][]string{}
 
-	f, err := os.Open("input.txt")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	fileScanner := bufio.NewScanner(f)
-	fileScanner.Split(bufio.ScanLines)
-
-	for fileScanner.Scan() {
-		raw := strings.Fields(fileScanner.Text())
-		mn := strings.Trim(strings.Split(raw[0], ":")[0], "")
-		if len(raw) == 2 {
-			my, _ := strconv.Atoi(strings.Split(raw[1], ":")[0])
-			monkeys[mn] = my
-		} else {
-			stack[mn] = []string{raw[1], raw[2], raw[3]}
-		}
-	}
-
-	stack["root"][1] = "="
-	stackstore := make(map[string][]string)
-	for k, v := range stack {
-		stackstore[k] = v
-	}
-	monkeysstore := make(map[string]int)
-	for k, v := range monkeys {
-		monkeysstore[k] = v
-	}
-	result := 0
-out:
-	for i := 0; true; i = i + 100000 {
-
-		stack := make(map[string][]string)
-		for k, v := range stackstore {
-			stack[k] = v
-		}
-		monkeys := make(map[string]int)
-		for k, v := range monkeysstore {
-			monkeys[k] = v
+		f, err := os.Open("input.txt")
+		if err != nil {
+			fmt.Println(err)
+			return
 		}
 
+		fileScanner := bufio.NewScanner(f)
+		fileScanner.Split(bufio.ScanLines)
+
+		for fileScanner.Scan() {
+			raw := strings.Fields(fileScanner.Text())
+			mn := strings.Trim(strings.Split(raw[0], ":")[0], "")
+			if len(raw) == 2 {
+				my, _ := strconv.Atoi(strings.Split(raw[1], ":")[0])
+				monkeys[mn] = my
+			} else {
+				stack[mn] = []string{raw[1], raw[2], raw[3]}
+			}
+		}
+
+		stack["root"][1] = "="
+		x1 := stack["root"][0]
+		x2 := stack["root"][2]
 		monkeys["humn"] = i
-		// fmt.Println(monkeys["humn"])
+
 		for len(stack) > 0 {
 			for mn, my := range stack {
 				m1 := my[0]
@@ -139,10 +117,11 @@ out:
 						case "/":
 							monkeys[mn] = monkeys[m1] / monkeys[m2]
 						case "=":
-							fmt.Println(monkeys[m1], monkeys[m2])
 							if monkeys[m1] == monkeys[m2] {
-								result = i
-								break out
+								fmt.Println(monkeys[x1], monkeys[x2], i, imin, imax)
+								// -1 because of the int() round error
+								fmt.Println("Part 2:", monkeys["humn"]-1)
+								os.Exit(0)
 							}
 						}
 						delete(stack, mn)
@@ -152,8 +131,16 @@ out:
 				}
 			}
 		}
+		if monkeys[x1] < monkeys[x2] {
+			imax = i
+			i = int((imax-imin)/2 + imin)
+			fmt.Println(monkeys[x1], monkeys[x2], i, imin, imax)
+		} else {
+			imin = i
+			i = int((imax-imin)/2 + imin)
+			fmt.Println(monkeys[x1], monkeys[x2], i, imin, imax)
+		}
 	}
-	fmt.Println("Part 2:", result)
 }
 
 func main() {
