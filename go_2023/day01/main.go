@@ -118,17 +118,12 @@ func part2() {
 
 	for fileScanner.Scan() {
 		x := fileScanner.Text()
-		fmt.Println(x)
 		x = FrontString(x)
-		fmt.Println(x)
 		x = BackString(x)
-		fmt.Println(x)
 		first := firstDigit(x)
 		last := lastDigit(x)
 
 		res := first*10 + last
-		fmt.Println(res)
-		fmt.Println("")
 		result = result + res
 
 	}
@@ -137,6 +132,8 @@ func part2() {
 }
 
 func main() {
+	fmt.Println("Part 1")
 	part1()
+	fmt.Println("Part 2")
 	part2()
 }
