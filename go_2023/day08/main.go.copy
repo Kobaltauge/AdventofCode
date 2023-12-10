@@ -1,0 +1,140 @@
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+	"time"
+)
+
+type knot struct {
+	left, right string
+}
+
+func part1() {
+	knods := make(map[string]knot)
+	f, err := os.Open("input.txt")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	steps := 0
+
+	fileScanner := bufio.NewScanner(f)
+	fileScanner.Split(bufio.ScanLines)
+	fileScanner.Scan()
+	way := []rune(fileScanner.Text())
+	fileScanner.Scan()
+	for fileScanner.Scan() {
+		x := fileScanner.Text()
+
+		line := strings.FieldsFunc(x, func(r rune) bool {
+			if r == '=' || r == '(' || r == ')' || r == ',' || r == ' ' {
+				return true
+			}
+			return false
+		})
+		knods[line[0]] = knot{left: line[1], right: line[2]}
+
+	}
+	f.Close()
+	n := "AAA"
+	for {
+		for _, w := range way {
+			if w == 76 {
+				n = knods[n].left
+				steps++
+			} else {
+				n = knods[n].right
+				steps++
+			}
+			if n == "ZZZ" {
+				break
+			}
+		}
+		if n == "ZZZ" {
+			break
+		}
+	}
+	fmt.Println(steps)
+}
+
+func checkSlice(a []string) bool {
+	for i := 0; i < len(a); i++ {
+		if !(strings.HasSuffix(a[i], "Z")) {
+			return false
+		}
+	}
+	return true
+}
+
+func part2() {
+	knods := make(map[string]knot)
+	f, err := os.Open("input.txt")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	steps := 0
+	starts := make([]string, 0)
+
+	fileScanner := bufio.NewScanner(f)
+	fileScanner.Split(bufio.ScanLines)
+	fileScanner.Scan()
+	way := []rune(fileScanner.Text())
+	fileScanner.Scan()
+	for fileScanner.Scan() {
+		x := fileScanner.Text()
+
+		line := strings.FieldsFunc(x, func(r rune) bool {
+			if r == '=' || r == '(' || r == ')' || r == ',' || r == ' ' {
+				return true
+			}
+			return false
+		})
+		knods[line[0]] = knot{left: line[1], right: line[2]}
+		if strings.HasSuffix(line[0], "A") {
+			starts = append(starts, line[0])
+		}
+
+	}
+	f.Close()
+	//paths := make([]string, len(starts))
+	exit := false
+	for {
+		for _, w := range way {
+			for _, path := range starts {
+				n := ""
+				if w == 76 {
+					n = knods[path].left
+				} else {
+					n = knods[path].right
+				}
+				starts = append(starts, n)
+				starts = starts[1:]
+			}
+			steps++
+			if steps%10000000 == 0 {
+				fmt.Println(time.Now())
+			}
+			if strings.HasSuffix(starts[0], "Z") && strings.HasSuffix(starts[1], "Z") && strings.HasSuffix(starts[2], "Z") {
+				if checkSlice(starts) {
+					exit = true
+					break
+				}
+			}
+		}
+		if exit {
+			break
+		}
+	}
+	fmt.Println(steps)
+}
+
+func main() {
+	//	fmt.Println("Part 1")
+	//	part1()
+	fmt.Println("Part 2")
+	part2()
+}
