@@ -162,6 +162,7 @@ func part2() {
 		// }
 		chkstr := stringGrid(grid)
 		resultarray = append(resultarray, chkstr)
+		// create copy of grid because go uses references for [][]byte
 		resultmap[chkstr] = make([][]byte, len(grid))
 		for c := range grid {
 			resultmap[chkstr][c] = make([]byte, len(grid[c]))
