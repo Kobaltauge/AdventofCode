@@ -1,0 +1,156 @@
+package main
+
+import (
+	"bytes"
+	"fmt"
+	"os"
+	"time"
+)
+
+func printGrid(grid [][]byte) {
+	height := len(grid)
+	for y := 0; y <= height-1; y++ {
+		fmt.Println(string(grid[y][:]))
+	}
+	fmt.Println()
+}
+
+func moveStone(grid [][]byte, x int, y int, way string) ([][]byte, bool) {
+	height := len(grid)
+	width := len(grid[0])
+	switch way {
+	case "n":
+		if y-1 < 0 {
+			return grid, false
+		}
+		if grid[y-1][x] != 46 {
+			return grid, false
+		}
+		grid[y][x] = 46
+		grid[y-1][x] = 79
+	case "e":
+		if x+1 >= width {
+			return grid, false
+		}
+		if grid[y][x+1] != 46 {
+			return grid, false
+		}
+		grid[y][x] = 46
+		grid[y][x+1] = 79
+	case "s":
+		if y+1 >= height {
+			return grid, false
+		}
+		if grid[y+1][x] != 46 {
+			return grid, false
+		}
+		grid[y][x] = 46
+		grid[y+1][x] = 79
+	case "w":
+		if x-1 < 0 {
+			return grid, false
+		}
+		if grid[y][x-1] != 46 {
+			return grid, false
+		}
+		grid[y][x] = 46
+		grid[y][x-1] = 79
+	}
+	return grid, true
+}
+
+func part1() {
+	data, _ := os.ReadFile("input.txt")
+	grid := bytes.Fields(data)
+
+	height := len(grid)
+	width := len(grid[0])
+
+	printGrid(grid)
+	for {
+		move := 0
+		var s bool
+		for y := 0; y <= height-1; y++ {
+			for x := 0; x <= width-1; x++ {
+				if grid[y][x] == 79 {
+					grid, s = moveStone(grid, x, y, "n")
+					if s {
+						move++
+					}
+				}
+			}
+		}
+		printGrid(grid)
+		if move == 0 {
+			break
+		}
+	}
+	mul := 1
+	result := 0
+	for i := len(grid) - 1; i >= 0; i-- {
+		count := 0
+		for _, s := range grid[i] {
+			if s == 79 {
+				count++
+			}
+		}
+		result = result + (mul * count)
+		mul++
+	}
+	fmt.Println("Part 1: ", result)
+}
+
+func part2() {
+	data, _ := os.ReadFile("sample.txt")
+	grid := bytes.Fields(data)
+
+	height := len(grid)
+	width := len(grid[0])
+	ways := []string{"n", "w", "s", "e"}
+
+	printGrid(grid)
+	for cycle := 0; cycle <= 1000000000; cycle++ {
+		for _, way := range ways {
+			for {
+				move := 0
+				var s bool
+				for y := 0; y <= height-1; y++ {
+					for x := 0; x <= width-1; x++ {
+						if grid[y][x] == 79 {
+							grid, s = moveStone(grid, x, y, way)
+							if s {
+								move++
+							}
+						}
+					}
+				}
+				if move == 0 {
+					break
+				}
+			}
+
+		}
+		if cycle%1000000 == 0 {
+			fmt.Println(time.Now(), " ", cycle)
+		}
+	}
+	printGrid(grid)
+	mul := 1
+	result := 0
+	for i := len(grid) - 1; i >= 0; i-- {
+		count := 0
+		for _, s := range grid[i] {
+			if s == 79 {
+				count++
+			}
+		}
+		result = result + (mul * count)
+		mul++
+	}
+	fmt.Println("Part 2: ", result)
+}
+
+func main() {
+	part1()
+	part2()
+}
