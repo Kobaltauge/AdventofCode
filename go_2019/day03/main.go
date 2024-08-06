@@ -90,6 +90,15 @@ func part1(file string) {
 	fmt.Println(solution) // rigth 489
 }
 
+func contains(s []point, elem point) bool {
+	for _, i := range s {
+		if i == elem {
+			return true
+		}
+	}
+	return false
+}
+
 func part2(file string) {
 	content, err := os.ReadFile(file)
 	if err != nil {
@@ -115,15 +124,22 @@ func part2(file string) {
 		}
 	}
 
-	result := 0
 	br := false
 	var cross point
 	// if cable cross, the shorter way has to be counted
 	// this is nocht implemented
+	way1 := make(map[point]int)
+	way1[point{0, 0}] = 0
+	way1len := 0
 	for step := 1; step < len(cable1); step++ {
+		if _, exists := way1[cable1[step]]; exists {
+			way1len = way1[cable1[step]]
+		} else {
+			way1len++
+		}
+		way1[cable1[step]] = step
 		for _, i := range intersect {
 			if cable1[step].x == i.x && cable1[step].y == i.y {
-				result = result + step + 1
 				cross = cable1[step]
 				br = true
 				break
@@ -135,9 +151,18 @@ func part2(file string) {
 	}
 
 	br = false
+	way2 := make(map[point]int)
+	way2[point{0, 0}] = 0
+	way2len := 0
 	for step := 1; step < len(cable2); step++ {
+		if _, exists := way2[cable2[step]]; exists {
+			way1len = way2[cable2[step]]
+		} else {
+			way2len++
+		}
+		way2[cable2[step]] = step
 		if cable2[step].x == cross.x && cable2[step].y == cross.y {
-			result = result + step + 1
+			way2len = way2len + step + 1
 			br = true
 			break
 		}
@@ -145,14 +170,14 @@ func part2(file string) {
 			break
 		}
 	}
-	fmt.Println(result)
+	fmt.Println(way1len + way2len)
 }
 
 func main() {
 	// part1("sample.txt")
 	// part1("exp1.txt")
 	// part1("exp2.txt")
-	part1("input.txt")
+	// part1("input.txt")
 	// part2
 	fmt.Println("30!")
 	part2("sample.txt")
@@ -163,6 +188,6 @@ func main() {
 	fmt.Println("410!")
 	part2("exp2.txt")
 	fmt.Println("---")
-	fmt.Println("not 178848 178846 178844 137012 178488")
+	fmt.Println("not 178848 178846 178844 137012 178488 376180")
 	part2("input.txt")
 }
