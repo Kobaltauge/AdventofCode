@@ -130,14 +130,15 @@ func part2(file string) {
 	// this is nocht implemented
 	way1 := make(map[point]int)
 	way1[point{0, 0}] = 0
+	for i, p := range cable1 {
+		way1[p] = i + 1
+	}
 	way1len := 0
-	for step := 1; step < len(cable1); step++ {
-		if _, exists := way1[cable1[step]]; exists {
-			way1len = way1[cable1[step]]
-		} else {
-			way1len++
+	step := 0
+	for _, v := range cable1 {
+		if _, exists := way1[v]; exists {
+			way1len = way1[v]
 		}
-		way1[cable1[step]] = step
 		for _, i := range intersect {
 			if cable1[step].x == i.x && cable1[step].y == i.y {
 				cross = cable1[step]
@@ -148,6 +149,7 @@ func part2(file string) {
 		if br {
 			break
 		}
+		way1len++
 	}
 
 	br = false
@@ -179,14 +181,15 @@ func main() {
 	// part1("exp2.txt")
 	// part1("input.txt")
 	// part2
-	fmt.Println("30!")
-	part2("sample.txt")
-	fmt.Println("---")
-	fmt.Println("610!")
-	part2("exp1.txt")
-	fmt.Println("---")
-	fmt.Println("410!")
-	part2("exp2.txt")
+	// fmt.Println("30!")
+	// part2("sample.txt")
+	// fmt.Println("---")
+	// fmt.Println("610!")
+	// part2("exp1.txt")
+	// fmt.Println("---")
+	// fmt.Println("410!")
+	// part2("exp2.txt")
+	part2("sample2.txt")
 	fmt.Println("---")
 	fmt.Println("not 178848 178846 178844 137012 178488 376180")
 	part2("input.txt")
